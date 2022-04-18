@@ -9,7 +9,40 @@ mongoose
     .then(() => console.log('資料庫連接成功'))
 
 const requestListener = async (req, res) => {
-
+    if (req.url == '/posts' && req.method == 'GET') {
+        const posts = await Post.find();
+        res.writeHead(200, HEADERS);
+        res.write(JSON.stringify({
+            "status": "success",
+            data: posts
+        }));
+        res.end();
+    } else if (req.url.startsWith('/posts?keyword=') && req.method == 'GET') {
+        try {
+            const keyword = req.url.split('=').pop();
+            // 編碼處理
+            const newKeyword = decodeURI(keyword)
+            const posts = await Post.find({
+                content: {
+                    $regex: newKeyword
+                }
+            });
+            res.writeHead(200, HEADERS);
+            res.write(JSON.stringify({
+                "status": "success",
+                data: posts
+            }));
+            res.end();
+        } catch (error) {
+            res.writeHead(400, HEADERS);
+            res.write(JSON.stringify({
+                "status": "false",
+                "message": "格式錯誤",
+                "error": error
+            }));
+            res.end();
+        }
+    }
 }
 
 const server = http.createServer(requestListener)
