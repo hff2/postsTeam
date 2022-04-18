@@ -50,7 +50,6 @@ const requestListener = async (req, res) => {
         req.on('end', async() => {
             try {
                 const data = JSON.parse(body);
-                console.log(data);
                 const newPost = await Post.create(
                     {
                         userName: data.userName,
@@ -66,7 +65,6 @@ const requestListener = async (req, res) => {
                 }));
                 res.end();
             } catch (error) {
-                console.log(error);
                 res.writeHead(400, HEADERS);
                 res.write(JSON.stringify({
                     "status": "false",
