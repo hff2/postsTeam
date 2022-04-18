@@ -16,7 +16,7 @@ const postSchema = new mongoose.Schema(
         },
         content: {
             type: String,
-            default: ""
+            required: [true, '貼文內容未填寫']
         },
         createdAt: {
             type: Date,
